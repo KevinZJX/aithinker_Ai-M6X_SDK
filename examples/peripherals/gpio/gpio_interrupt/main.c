@@ -7,9 +7,9 @@ struct bflb_device_s *gpio;
 void gpio_isr(int irq, void *arg)
 {
     static int i = 0;
-    bool intstatus = bflb_gpio_get_intstatus(gpio, GPIO_PIN_0);
+    bool intstatus = bflb_gpio_get_intstatus(gpio, GPIO_PIN_2);
     if (intstatus) {
-        bflb_gpio_int_clear(gpio, GPIO_PIN_0);
+        bflb_gpio_int_clear(gpio, GPIO_PIN_2);
         printf("%d\r\n", i++);
     }
 }
@@ -21,8 +21,8 @@ int main(void)
     gpio = bflb_device_get_by_name("gpio");
     printf("gpio interrupt\r\n");
 
-    bflb_gpio_int_init(gpio, GPIO_PIN_0, GPIO_INT_TRIG_MODE_SYNC_LOW_LEVEL);
-    bflb_gpio_int_mask(gpio, GPIO_PIN_0, false);
+    bflb_gpio_int_init(gpio, GPIO_PIN_2, GPIO_INT_TRIG_MODE_SYNC_LOW_LEVEL);
+    bflb_gpio_int_mask(gpio, GPIO_PIN_2, false);
 
     bflb_irq_attach(gpio->irq_num, gpio_isr, gpio);
     bflb_irq_enable(gpio->irq_num);
