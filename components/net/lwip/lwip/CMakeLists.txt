@@ -25,6 +25,7 @@ sdk_library_add_sources(src/core/ipv4/igmp.c)
 sdk_library_add_sources(src/core/ipv4/ip4_addr.c)
 sdk_library_add_sources(src/core/ipv4/ip4_frag.c)
 sdk_library_add_sources(src/core/ipv4/ip4.c)
+sdk_library_add_sources(src/core/ipv4/ip4_nat.c)
 
 sdk_library_add_sources(src/core/def.c)
 sdk_library_add_sources(src/core/dns.c)

@@ -57,6 +57,10 @@
 #include "lwip/stats.h"
 #include "lwip/prot/iana.h"
 
+#if IP_NAT
+#include "lwip/ip4_nat.h"
+#endif
+
 #include <string.h>
 
 #ifdef LWIP_HOOK_FILENAME
@@ -664,16 +668,30 @@ err_t ip4_input(struct pbuf *p, struct netif *inp)
 
     /* packet not for us? */
     if (netif == NULL) {
+#if IP_FORWARD || IP_NAT
+    u8_t taken = 0;
+#endif /* IP_FORWARD || IP_NAT */
+
         /* packet not for us, route or discard */
         LWIP_DEBUGF(IP_DEBUG | LWIP_DBG_TRACE, ("ip4_input: packet not for us.\n"));
-#if IP_FORWARD
+#if IP_FORWARD || IP_NAT
 
         /* non-broadcast packet? */
         if (!ip4_addr_isbroadcast(ip4_current_dest_addr(), inp)) {
+#if IP_NAT
+            taken = ip4_nat_out(p);
+            if (!taken)
+#endif
+            {
+#if IP_FORWARD
             /* try to forward IP packet on (other) interfaces */
             ip4_forward(p, (struct ip_hdr *)p->payload, inp);
-        } else
+            taken = 1;
 #endif /* IP_FORWARD */
+            }
+        }
+        if (!taken)
+#endif /* IP_FORWARD || IP_NAT */
         {
             IP_STATS_INC(ip.drop);
             MIB2_STATS_INC(mib2.ipinaddrerrors);
@@ -740,6 +758,13 @@ err_t ip4_input(struct pbuf *p, struct netif *inp)
     ip_data.current_input_netif = inp;
     ip_data.current_ip4_header = iphdr;
     ip_data.current_ip_header_tot_len = IPH_HL_BYTES(iphdr);
+
+#if IP_NAT
+  if (!ip4_addr_isbroadcast(&(iphdr->dest), inp) &&
+      (ip4_nat_input(p) != 0)) {
+     LWIP_DEBUGF(IP_DEBUG, ("ip_input: packet consumed by nat layer\n"));
+  } else
+#endif /* IP_NAT */
 
 #if LWIP_RAW
     /* raw input did not eat the packet? */

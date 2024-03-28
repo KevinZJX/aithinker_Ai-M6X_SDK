@@ -4,7 +4,6 @@
 .clangd
 cscope*
 compile_commands.*
-components
 drivers
 bsp
 examples/solutions
