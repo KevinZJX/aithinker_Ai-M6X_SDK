@@ -422,13 +422,9 @@ ip4_nat_check_header(struct pbuf *p, u16_t min_size)
   struct ip_hdr  *iphdr = (struct ip_hdr*)p->payload;
   s16_t iphdr_len = IPH_HL(iphdr) * 4;
 
-  if(!pbuf_header(p, -iphdr_len)) {
-    if(p->tot_len >= min_size) {
-      ret = p->payload;
+    if ((p->tot_len > iphdr_len) && ((p->tot_len - iphdr_len) >= min_size)) {
+            ret = p->payload + iphdr_len;
     }
-    /* Restore pbuf payload pointer from previous header check. */
-    pbuf_header(p, iphdr_len);
-  }
   return ret;
 }
 
