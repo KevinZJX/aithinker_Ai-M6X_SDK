@@ -2,7 +2,7 @@
 #define __SHELL_CONFIG_H__
 
 #ifndef SHELL_DEFAULT_NAME
-#define SHELL_DEFAULT_NAME "bouffalolab "
+#define SHELL_DEFAULT_NAME "# "
 #endif
 
 #ifndef SHELL_CONSOLEBUF_SIZE
