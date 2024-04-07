@@ -28,6 +28,7 @@ endif()
 
 if(CONFIG_CHERRYUSB_DEVICE_CDC)
 sdk_library_add_sources(class/cdc/usbd_cdc.c)
+sdk_library_add_sources(class/cdc/usbd_cdc_ecm.c)
 endif()
 if(CONFIG_CHERRYUSB_DEVICE_HID)
 sdk_library_add_sources(class/hid/usbd_hid.c)
@@ -54,10 +55,10 @@ sdk_library_add_sources(class/video/usbh_video.c)
 sdk_library_add_sources(class/audio/usbh_audio.c)
 
 sdk_add_link_libraries(
--ucdc_acm_class_driver 
--uhid_class_driver 
--umsc_class_driver 
--uvideo_ctrl_class_driver 
+-ucdc_acm_class_driver
+-uhid_class_driver
+-umsc_class_driver
+-uvideo_ctrl_class_driver
 -uaudio_ctrl_class_driver)
 
 endif()
